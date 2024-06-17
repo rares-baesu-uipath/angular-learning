@@ -1,0 +1,13 @@
+<h1>List of orders</h1>
+
+<a [routerLink]="['/orders/new']">
+    Create new order
+</a>
+
+<br/>
+
+<div *ngFor="let order of orders">
+    <a [routerLink]="['/orders', order.id]">
+        Mock order 1
+    </a>
+</div>
