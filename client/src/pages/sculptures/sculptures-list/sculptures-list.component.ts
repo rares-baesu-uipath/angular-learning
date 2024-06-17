@@ -16,7 +16,7 @@ export class SculpturesListComponent {
   constructor(private httpService: SculptureService) { }
 
   ngOnInit() {
-    this.httpService.getOrders().subscribe(
+    this.httpService.getSculptures().subscribe(
       {
         next: (response) => this.sculptures = response as Sculpture[],
         error: (err) => console.log(err)

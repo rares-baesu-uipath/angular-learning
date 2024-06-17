@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Sculpture } from '../../model/sculpture';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,23 @@ export class SculptureService {
 
   constructor(private http: HttpClient) { }
 
-  getOrders() {
+  getSculptures() {
     return this.http.get(this.BASE_URL);
+  }
+
+  getSculpture(id: string) {
+    return this.http.get(`${this.BASE_URL}/${id}`);
+  }
+
+  createSculpture(sculpture: Sculpture) {
+    return this.http.post(`${this.BASE_URL}`, {
+      ...sculpture
+    })
+  }
+
+  updateSculpture(sculpture: Sculpture) {
+    return this.http.put(`${this.BASE_URL}/${sculpture.id}`, {
+      ...sculpture
+    })
   }
 }
