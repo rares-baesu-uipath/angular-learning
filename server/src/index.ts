@@ -28,6 +28,13 @@ app.get('/orders', (req, res) => {
     .catch(() => res.send('ERROR'));
 });
 
+app.get('/sculptures', (req, res) => {
+  readData()
+    .then(data => JSON.parse(data.toString()))
+    .then(data => res.send(data.sculptures))
+    .catch(() => res.send('ERROR'));
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
