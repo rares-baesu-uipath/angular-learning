@@ -5,9 +5,13 @@
 </a>
 
 <br/>
+<br/>
 
-<div *ngFor="let sculpture of sculptures">
-    <a [routerLink]="['/sculptures', sculpture.id]">
-        {{sculpture.name}}
-    </a>
+<div *ngIf="sculptures$ | async as sculptures">
+    <div *ngFor="let sculpture of sculptures">
+        <a [routerLink]="['/sculptures', sculpture.id]">
+            {{sculpture.name}}
+        </a>
+    </div>
+    
 </div>

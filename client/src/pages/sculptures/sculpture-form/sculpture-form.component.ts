@@ -1,18 +1,11 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription, filter, of, switchMap } from 'rxjs';
+import { Observable, filter, switchMap } from 'rxjs';
 import { Sculpture } from '../../../model/sculpture';
 import { SculptureService } from '../../../services/sculpture/sculpture.service';
-import { ControlValueAccessor, Form, FormBuilder, FormGroup, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { numberFieldValidator, textFieldValidator } from '../../../utils';
-
-const EMPTY_SCULPTURE: Sculpture = {
-  name: '',
-  basePrice: 0,
-  baseWeight: 0,
-  id: ''
-}
 
 @Component({
   selector: 'app-sculpture-form',
@@ -24,50 +17,43 @@ const EMPTY_SCULPTURE: Sculpture = {
 export class SculptureFormComponent {
   sculptureId: string;
   sculpture$: Observable<Sculpture>;
-  sculptureForm: FormGroup = this.formBuilder.group<Sculpture>({ ...EMPTY_SCULPTURE });
+  sculptureForm: FormGroup;
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute, 
-    private httpService: SculptureService, 
+    private route: ActivatedRoute,
+    private httpService: SculptureService,
     private formBuilder: FormBuilder
-  ) { }
+  ) {
+    this.fillForm();
+  }
 
   ngOnInit() {
     this.sculpture$ = this.route.params.pipe(
       filter(params => !!params['id']),
-      switchMap(params => this.httpService.getSculpture(params['id']))
-      // mai pun un switchMap pentru initForm ???
+      switchMap(params => {
+        this.isLoading = true;
+        return this.httpService.getSculpture(params['id'])
+      })
     ) as Observable<Sculpture>;
 
     this.sculpture$.subscribe({
       next: (sculpture) => {
         this.sculptureId = sculpture.id;
-        this.initForm(sculpture)
+        this.fillForm(sculpture)
+        this.isLoading = false;
       },
       error: (error) => console.error(error)
     })
-
-    // this.routeSub = this.route.params.subscribe(params => {
-    //   this.sculptureId = params['id']
-    // });
-
-    // if (this.sculptureId) {
-
-    // }
-    // this.httpService.getSculpture(this.sculptureId).subscribe(
-    //   {
-    //     next: (response) => this.sculpture = response as Sculpture,
-    //     error: (err) => console.log(err)
-    //   });
   }
 
-  initForm(sculpture: Sculpture) {
+  fillForm(sculpture?: Sculpture) {
     this.sculptureForm = this.formBuilder.group({
-      name: [sculpture.name, textFieldValidator],
-      basePrice: [sculpture.basePrice, numberFieldValidator],
-      baseWeight: [sculpture.baseWeight, numberFieldValidator],
-      id: [sculpture.id]
+      name: [sculpture?.name || '', textFieldValidator],
+      basePrice: [sculpture?.basePrice || '', numberFieldValidator],
+      baseWeight: [sculpture?.baseWeight || '', numberFieldValidator],
+      id: [sculpture?.id || '']
     });
   }
 
@@ -75,17 +61,11 @@ export class SculptureFormComponent {
     if (!this.sculptureForm.valid) {
       return;
     }
-    if (this.sculptureId) {
-      this.httpService.updateSculpture(this.sculptureForm.value).subscribe({
-        next: () => this.router.navigate(['/sculptures'])
-      });
-    } else {
-      this.httpService.createSculpture(this.sculptureForm.value).subscribe({
-        next: () => this.router.navigate(['/sculptures'])
-      });
-    }
+
+    const httpCall = this.sculptureId
+      ? this.httpService.updateSculpture(this.sculptureForm.value)
+      : this.httpService.createSculpture(this.sculptureForm.value);
+
+    httpCall.subscribe(() => this.router.navigate(['/sculptures']));
   }
-  // ngOnDestroy() {
-  //   this.routeSub.unsubscribe();
-  // }
 }

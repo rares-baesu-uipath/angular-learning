@@ -1,24 +1,29 @@
-<h1 *ngIf="sculpture$ | async; else create_sculpture">
+<h1 *ngIf="sculptureId; else create_sculpture">
     Edit sculpture
 </h1>
-<ng-template #create_sculpture><h1>Create sculpture</h1></ng-template>
+<ng-template #create_sculpture>
+    <h1>Create sculpture</h1>
+</ng-template>
 
-
-<form [formGroup]="sculptureForm" (ngSubmit)="onSubmit()">
-    <div>
-        <label for="name">Name:</label>
-        <input formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..."/>
-    </div>
-    <div>
-        <label for="basePrice">Base price:</label>
-        <input formControlName="basePrice" id="price" name="basePrice" type="number"/>
-    </div>
-    <div>
-        <label for="baseWeight">Base weight:</label>
-        <input formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number"/>
-    </div>
-    <div>
-        <button type="submit">Submit</button>
-    </div>
-</form>
-
+<div *ngIf="isLoading; else form">
+    Is loading... (spinner)
+</div>
+<ng-template #form>
+    <form [formGroup]="sculptureForm" (ngSubmit)="onSubmit()">
+        <div>
+            <label for="name">Name:</label>
+            <input formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..." />
+        </div>
+        <div>
+            <label for="basePrice">Base price:</label>
+            <input formControlName="basePrice" id="price" name="basePrice" type="number" />
+        </div>
+        <div>
+            <label for="baseWeight">Base weight:</label>
+            <input formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number" />
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</ng-template>

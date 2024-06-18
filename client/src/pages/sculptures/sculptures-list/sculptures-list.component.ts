@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Sculpture } from '../../../model/sculpture';
 import { SculptureService } from '../../../services/sculpture/sculpture.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sculptures-list',
@@ -12,14 +13,10 @@ import { SculptureService } from '../../../services/sculpture/sculpture.service'
   styleUrl: './sculptures-list.component.scss'
 })
 export class SculpturesListComponent {
-  sculptures: Sculpture[];
+  sculptures$: Observable<Sculpture[]>;
   constructor(private httpService: SculptureService) { }
 
   ngOnInit() {
-    this.httpService.getSculptures().subscribe(
-      {
-        next: (response) => this.sculptures = response as Sculpture[],
-        error: (err) => console.log(err)
-      });
+    this.sculptures$ = this.httpService.getSculptures() as Observable<Sculpture[]>;
   }
 }
