@@ -1,6 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription, filter, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, filter, map, of, switchMap } from 'rxjs';
 import { Form, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { Order } from '../../../model/model';
 import { OrderService } from '../../../services/order/order.service';
@@ -19,20 +19,13 @@ const EMPTY_ORDER = {
   selector: 'app-order-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SculpturePickerComponent],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OrderFormComponent),
-      multi: true,
-    },
-  ],
   templateUrl: './order-form.component.html',
   styleUrl: './order-form.component.scss'
 })
 export class OrderFormComponent {
   orderId: string;
-  orders$: Observable<Order>;
-  orderForm: FormGroup = this.formBuilder.group<Order>({ ...EMPTY_ORDER });;
+  order$: Observable<Order>;
+  orderForm$: Observable<FormGroup> = of(this.formBuilder.group<Order>({ ...EMPTY_ORDER }));
 
   private routeSub: Subscription;
   constructor(
@@ -43,19 +36,18 @@ export class OrderFormComponent {
   ) { }
 
   ngOnInit() {
-    this.orders$ = this.route.params.pipe(
+
+    this.order$ = this.route.params.pipe(
       filter(params => !!params['id']),
       switchMap(params => this.httpService.getOrder(params['id']))
       // mai pun un switchMap pentru initForm ???
     ) as Observable<Order>;
 
-    this.orders$.subscribe({
-      next: (order) => {
-        this.orderId = order.id;
-        this.initForm(order)
-      },
-      error: (error) => console.error(error)
-    })
+    this.orderForm$ = this.order$.pipe(
+      map(order => this.formBuilder.group({
+        ...order
+      }))
+    )
   }
 
   initForm(order: Order) {
@@ -67,11 +59,11 @@ export class OrderFormComponent {
     });
   }
 
-  onSubmit() {
-    if (!this.orderForm.valid) {
-      return;
-    }
-    console.log(this.orderForm.value)
+  onSubmit() { }
+    // if (!this.orderForm.valid) {
+    //   return;
+    // }
+    // console.log(this.orderForm.value)
     // if (this.orderId) {
     //   this.httpService.updateOrder(this.orderForm.value).subscribe({
     //     next: () => this.router.navigate(['/orders'])
@@ -81,7 +73,7 @@ export class OrderFormComponent {
     //     next: () => this.router.navigate(['/orders'])
     //   });
     // }
-  }
+ 
 
   // ngOnDestroy() {
   //   this.routeSub.unsubscribe();
