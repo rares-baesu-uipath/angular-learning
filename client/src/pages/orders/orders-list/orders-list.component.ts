@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { OrderService } from '../../../services/order/order.service';
 import { Order } from '../../../model/model';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-orders-list',
@@ -12,14 +13,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './orders-list.component.scss'
 })
 export class OrdersListComponent {
-  orders: Order[];
+  orders$: Observable<Order[]>;
   constructor(private httpService: OrderService) { }
 
   ngOnInit() {
-    this.httpService.getOrders().subscribe(
-      {
-        next: (response) => this.orders = response as Order[],
-        error: (err) => console.log(err)
-      });
+    this.orders$ = this.httpService.getOrders() as Observable<Order[]>;
   }
 }

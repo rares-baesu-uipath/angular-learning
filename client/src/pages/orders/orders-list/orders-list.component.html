@@ -5,9 +5,12 @@
 </a>
 
 <br/>
+<br/>
 
-<div *ngFor="let order of orders">
-    <a [routerLink]="['/orders', order.id]">
-        Order: {{order.id}}
-    </a>
+<div *ngIf="orders$ | async as orders">
+    <div *ngFor="let order of orders">
+        <a [routerLink]="['/orders', order.id]">
+            Order: {{order.id}}
+        </a>
+    </div>    
 </div>
