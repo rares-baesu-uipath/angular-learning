@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import cors from 'cors';
 import {v4} from 'uuid';
+import bodyParser from 'body-parser';
 
 const app = express();
 const port = 3000;
@@ -21,7 +22,7 @@ const writeData = (data: Object) => {
 }
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
 app.get('/orders', (req, res) => {
   readData()
@@ -29,6 +30,55 @@ app.get('/orders', (req, res) => {
     .then(data => res.send(data.orders))
     .catch(() => res.send('ERROR'));
 });
+
+app.get('/orders/:id', (req, res) => {
+  readData()
+    .then(data => JSON.parse(data.toString()))
+    .then(data => res.send(data.orders.find((s: any) => s.id === req.params.id)))
+    .catch(() => res.send('ERROR'));
+})
+
+app.put('/orders/:id', (req, res) => {
+  readData()
+  .then(data => JSON.parse(data.toString()))
+  .then(data => {
+    const idx = data.orders.findIndex((s: any) => s.id === req.params.id);
+    data.orders[idx] = req.body;
+    writeData(data).then(() => res.send({status: 'ok'}));
+  })
+  .catch(() => res.send('ERROR'));
+})
+
+app.post('/orders', (req, res) => {
+  readData()
+  .then(data => JSON.parse(data.toString()))
+  .then(data => {
+    const newData = {...req.body, id: v4() }
+    data.orders.push(newData);
+    writeData(data).then(() => res.send({status: 'ok'}));
+  })
+  .catch((err) => res.send('ERROR' + err));
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/sculptures', (req, res) => {
   readData()
@@ -64,7 +114,6 @@ app.post('/sculptures', (req, res) => {
     writeData(data).then(() => res.send({status: 'ok'}));
   })
   .catch((err) => res.send('ERROR' + err));
-  
 })
 
 app.listen(port, () => {

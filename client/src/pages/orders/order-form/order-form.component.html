@@ -1,1 +1,25 @@
-<h1>{{orderId ? 'Edit order' : 'Create order'}}</h1>
+<h1 *ngIf="orders$ | async; else create_order">
+    Edit order
+</h1>
+<ng-template #create_order><h1>Create order</h1></ng-template>
+
+
+<form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="buyerName">Buyer name:</label>
+        <input formControlName="buyerName" id="buyerName" name="buyerName" type="text" placeholder="John Doe"/>
+    </div>
+    <div>
+        <label for="buyerDeliveryAddress">Address:</label>
+        <input formControlName="buyerDeliveryAddress" id="buyerDeliveryAddress" name="buyerDeliveryAddress" type="text"/>
+    </div>
+    <!-- <div>
+        <label for="baseWeight">Base weight:</label>
+        <input formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number"/>
+    </div> -->
+    <sculpture-picker formControlName="configuredSculptures"></sculpture-picker>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+

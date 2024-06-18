@@ -1,1 +1,77 @@
-{"sculptures":[{"id":"1","name":"soldier sculpture","basePrice":20,"baseWeight":10},{"id":"2","name":"greek sculpture","basePrice":20,"baseWeight":20},{"id":"3","name":"cat sculpture","basePrice":30,"baseWeight":30},{"name":"test2223","basePrice":2,"baseWeight":4,"id":"ceaf6f3a-097c-43c4-9037-0e139205f3ec"}],"orders":[{"id":"1","buyerName":"Rares","deliveryAddress":"bla bla bla","configuredSculptures":[{"material":"WOOD","sculpture":{"id":"1","name":"soldier sculpture","basePrice":20,"baseWeight":10}},{"material":"BRONZE","sculpture":{"id":"2","name":"greek sculpture","basePrice":20,"baseWeight":20}}]},{"id":"2","buyerName":"Rares","deliveryAddress":"bla bla bla 2","configuredSculptures":[{"material":"PLATINUM","sculpture":{"id":"3","name":"cat sculpture","basePrice":30,"baseWeight":30}}]}]}
+{
+    "sculptures": [
+        {
+            "id": "1",
+            "name": "soldier sculpture",
+            "basePrice": 20,
+            "baseWeight": 10
+        },
+        {
+            "id": "2",
+            "name": "greek sculpture",
+            "basePrice": 20,
+            "baseWeight": 20
+        },
+        {
+            "id": "3",
+            "name": "cat sculpture",
+            "basePrice": 30,
+            "baseWeight": 30
+        },
+        {
+            "name": "test2223",
+            "basePrice": 2,
+            "baseWeight": 4,
+            "id": "ceaf6f3a-097c-43c4-9037-0e139205f3ec"
+        }
+    ],
+    "orders": [
+        {
+            "id": "1",
+            "buyerName": "Rares",
+            "deliveryAddress": "bla bla bla",
+            "configuredSculptures": [
+                {
+                    "material": "WOOD",
+                    "sculpture": {
+                        "id": "1",
+                        "name": "soldier sculpture",
+                        "basePrice": 20,
+                        "baseWeight": 10
+                    }
+                },
+                {
+                    "material": "BRONZE",
+                    "sculpture": {
+                        "id": "2",
+                        "name": "greek sculpture",
+                        "basePrice": 20,
+                        "baseWeight": 20
+                    }
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "buyerName": "Rares",
+            "deliveryAddress": "bla bla bla 2",
+            "configuredSculptures": [
+                {
+                    "material": "PLATINUM",
+                    "sculpture": {
+                        "id": "3",
+                        "name": "cat sculpture",
+                        "basePrice": 30,
+                        "baseWeight": 30
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cd467ab3-9b16-4d1e-af46-65aa9ae74090",
+            "buyerName": "test",
+            "buyerDeliveryAddress": "asdasdads",
+            "configuredSculptures": null
+        }
+    ]
+}

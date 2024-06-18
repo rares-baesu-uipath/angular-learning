@@ -1,4 +1,4 @@
-enum Material {
+export enum Material {
     WOOD = 'WOOD',
     BRONZE = 'BRONZE',
     PLATINUM = 'PLATINUM'

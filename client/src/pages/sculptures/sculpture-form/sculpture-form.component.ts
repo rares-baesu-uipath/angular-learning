@@ -18,13 +18,6 @@ const EMPTY_SCULPTURE: Sculpture = {
   selector: 'app-sculpture-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SculptureFormComponent),
-      multi: true
-    }
-  ],
   templateUrl: './sculpture-form.component.html',
   styleUrl: './sculpture-form.component.scss'
 })
@@ -32,21 +25,6 @@ export class SculptureFormComponent {
   sculptureId: string;
   sculpture$: Observable<Sculpture>;
   sculptureForm: FormGroup = this.formBuilder.group<Sculpture>({ ...EMPTY_SCULPTURE });
-
-  // _value: Sculpture;
-  // onChange: () => void;
-  // onTouch: () => void;
-    // writeValue(obj: any): void {
-  //   console.log('write value', obj)
-  // }
-  // registerOnChange(fn: any): void {
-  //   this.onChange = fn;
-  // }
-  // registerOnTouched(fn: any): void {
-  //   this.onTouch = fn;
-  // }
-  // setDisabledState?(isDisabled: boolean): void {
-  // }
 
   constructor(
     private router: Router,
