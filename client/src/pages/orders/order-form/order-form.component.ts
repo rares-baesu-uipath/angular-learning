@@ -62,7 +62,6 @@ export class OrderFormComponent {
     if (!this.orderForm.valid) {
       return;
     }
-
     const httpCall = this.orderId
       ? this.httpService.updateOrder(this.orderForm.value)
       : this.httpService.createOrder(this.orderForm.value);

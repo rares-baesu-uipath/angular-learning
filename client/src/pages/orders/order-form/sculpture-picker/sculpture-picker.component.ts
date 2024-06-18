@@ -1,5 +1,5 @@
 import { Component, forwardRef } from '@angular/core';
-import { Sculpture } from '../../../../model/sculpture';
+import { ConfiguredSculpturePayload, Material, Sculpture } from '../../../../model/sculpture';
 import { SculptureService } from '../../../../services/sculpture/sculpture.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -22,15 +22,22 @@ import { Observable } from 'rxjs';
 })
 export class SculpturePickerComponent implements ControlValueAccessor {
   sculptures$: Observable<Sculpture[]>;
-  constructor(private httpService: SculptureService) { }
+  _value: ConfiguredSculpturePayload[] = [{
+    sculptureId: '',
+    material: Material.WOOD
+  }]; //sculptureId & Material
 
-  _value: Sculpture;
-  onChange: (value: Sculpture) => void = () => {};
+  constructor(private httpService: SculptureService) {
+    
+  }
+
+  onChange: (value: ConfiguredSculpturePayload[]) => void = () => {};
   onTouch: () => void;
+
   writeValue(obj: any): void {
-    this._value = obj;
-    console.log(obj)
-    this.onChange(obj)
+    if (obj) {
+      this._value = obj;
+    }
   }
   registerOnChange(fn: (value:any) => void): void {
     this.onChange = fn;
@@ -39,17 +46,26 @@ export class SculpturePickerComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  get value(): Sculpture {
+  updateSculpture(sculptureId: string) {
+    this._value[0].sculptureId = sculptureId;
+    this.onChange(this._value);
+  }
+
+  updateMaterial(material: Material) {
+    this._value[0].material = material;
+    this.onChange(this._value);
+  }
+
+  get value() {
     return this._value;
   };
 
-  set value(value: Sculpture) {
+  set value(value) {
     if (value !== this._value) {
       this._value = value;
-      this.onChange(value);
     }
   }
   ngOnInit() {
-    this.sculptures$ = this.httpService.getSculptures() as Observable<Sculpture[]>
+    this.sculptures$ = this.httpService.getSculptures() as Observable<Sculpture[]>;
   }
 }

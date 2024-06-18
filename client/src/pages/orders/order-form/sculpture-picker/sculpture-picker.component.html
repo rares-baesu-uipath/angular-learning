@@ -1,10 +1,9 @@
 <label for="sculpture-picker">Choose a sculpture:</label>
-
-<select [(ngModel)]="_value" (ngModelChange)="writeValue($event)" name="sculpture-name-picker" id="sculpture-name-picker">
+<select [(ngModel)]="_value[0].sculptureId" (ngModelChange)="updateSculpture($event)" name="sculpture-name-picker" id="sculpture-name-picker">
     <option *ngFor="let sculpture of sculptures$ | async" [value]="sculpture.id" >{{sculpture.name}}</option>
 </select>
 
-<select [(ngModel)]="_value" (ngModelChange)="writeValue($event)" name="sculpture-material-picker" id="sculpture-material-picker">
+<select [(ngModel)]="_value[0].material" (ngModelChange)="updateMaterial($event)" name="sculpture-material-picker" id="sculpture-material-picker">
     <option value="WOOD">Wood</option>
     <option value="BRONZE">Bronze</option>
     <option value="PLATINUM">Platinum</option>

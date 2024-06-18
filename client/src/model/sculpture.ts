@@ -31,3 +31,7 @@ export type ConfiguredSculpture = {
     material: Material
 }
 
+export type ConfiguredSculpturePayload = {
+    sculptureId: string;
+    material: Material;
+}
