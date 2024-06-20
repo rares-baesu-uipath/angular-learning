@@ -43,7 +43,9 @@ export class OrderFormComponent {
 
   configuredSculpturesValidator(control: FormControl) {
     const configuredSculptures = control.value;
+    console.log('apel iaci')
     if (configuredSculptures.length === 0) {
+      console.log('eroareeeee')
       return { 
         configuredSculpturesInvalid: {
           message: 'Order must have at least one sculpture'
@@ -84,7 +86,7 @@ export class OrderFormComponent {
 
   onSubmit() {
     this.submitted = true;
-
+    console.log(this.orderForm.value)
     if (!this.orderForm.valid) {
       return;
     }

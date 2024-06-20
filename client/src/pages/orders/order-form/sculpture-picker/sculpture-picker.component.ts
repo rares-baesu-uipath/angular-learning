@@ -70,6 +70,7 @@ export class SculpturePickerComponent implements ControlValueAccessor {
 
   removeSculpture(index: number) {
     this._value.splice(index, 1)
+    this.onChange(this._value);
   }
 
   get value() {
