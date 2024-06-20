@@ -30,8 +30,3 @@ export type ConfiguredSculpture = {
     sculpture: Sculpture,
     material: Material
 }
-
-export type ConfiguredSculpturePayload = {
-    sculptureId: string;
-    material: Material;
-}

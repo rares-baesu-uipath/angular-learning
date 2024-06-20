@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, switchMap } from 'rxjs';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Order } from '../../../model/model';
 import { OrderService } from '../../../services/order/order.service';
-import { textFieldValidator } from '../../../utils';
 import { CommonModule } from '@angular/common';
 import { SculpturePickerComponent } from './sculpture-picker/sculpture-picker.component';
 import {MatInputModule} from '@angular/material/input';
@@ -31,6 +30,7 @@ export class OrderFormComponent {
   orders$: Observable<Order>;
   orderForm: FormGroup;
   isLoading: boolean = false;
+  submitted: boolean = false;
 
   constructor(
     private router: Router,
@@ -40,6 +40,19 @@ export class OrderFormComponent {
   ) {
     this.fillForm();
   }
+
+  configuredSculpturesValidator(control: FormControl) {
+    const configuredSculptures = control.value;
+    if (configuredSculptures.length === 0) {
+      return { 
+        configuredSculpturesInvalid: {
+          message: 'Order must have at least one sculpture'
+        } 
+      };
+    }
+    return null;
+  }
+  
 
   ngOnInit() {
     this.orders$ = this.route.params.pipe(
@@ -65,14 +78,17 @@ export class OrderFormComponent {
       id: [order?.id || ''],
       buyerName: [order?.buyerName || '', Validators.required],
       buyerDeliveryAddress: [order?.buyerDeliveryAddress || '', Validators.required],
-      configuredSculptures: [order?.configuredSculptures || '', Validators.required]
+      configuredSculptures: [order?.configuredSculptures || '', [Validators.required, this.configuredSculpturesValidator]]
     });
   }
 
   onSubmit() {
+    this.submitted = true;
+
     if (!this.orderForm.valid) {
       return;
     }
+    
     const httpCall = this.orderId
       ? this.httpService.updateOrder(this.orderForm.value)
       : this.httpService.createOrder(this.orderForm.value);

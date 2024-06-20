@@ -1,27 +1,39 @@
-<div [formGroup]="sculpturePickerForm" class="wrapper">
-    <div>
-        <mat-form-field>
-            <mat-label>Choose a sculpture</mat-label>
-            <mat-select formControlName="sculptureId" (valueChange)="updateSculpture($event)" name="sculpture-name-picker"
-                id="sculpture-name-picker">
-                <mat-option *ngFor="let sculpture of sculptures$ | async"
-                    [value]="sculpture.id">{{sculpture.name}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-error *ngIf="this.sculpturePickerForm.get('sculptureId')?.touched && this.sculpturePickerForm.get('sculptureId')?.invalid">
-            Required field
-        </mat-error>
+<div *ngIf="sculptures" [formGroup]="sculpturePickerForm">
+    <div class="wrapper">
+        <div>
+            <mat-form-field>
+                <mat-label>Choose a sculpture</mat-label>
+                <mat-select formControlName="sculptureId" name="sculpture-name-picker"
+                    id="sculpture-name-picker">
+                    <mat-option *ngFor="let sculpture of sculptures"
+                        [value]="sculpture.id">{{sculpture.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    
+        <div>   
+            <mat-form-field style="margin-left: 24px;">
+                <mat-label>Choose the Material</mat-label>
+                <mat-select formControlName="material" name="sculpture-material-picker" id="sculpture-material-picker">
+                    <mat-option value="WOOD">Wood</mat-option>
+                    <mat-option value="BRONZE">Bronze</mat-option>
+                    <mat-option value="PLATINUM">Platinum</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    
+        <div class="add">
+            <button mat-raised-button type="button" color="primary" (click)="addSculpture()">
+                Add
+            </button>
+        </div>
     </div>
-
-    <div>   
-        <mat-form-field style="margin-left: 24px;">
-            <mat-label>Choose the Material</mat-label>
-            <mat-select [(value)]="_value[0].material" (valueChange)="updateMaterial($event)"
-                name="sculpture-material-picker" id="sculpture-material-picker">
-                <mat-option value="WOOD">Wood</mat-option>
-                <mat-option value="BRONZE">Bronze</mat-option>
-                <mat-option value="PLATINUM">Platinum</mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+    <mat-chip-set *ngFor="let configuredSculpture of _value; let i = index" aria-label="Fish selection">
+        <mat-chip>{{configuredSculpture.sculpture.name}} made of {{configuredSculpture.material}}</mat-chip>
+        <mat-chip (click)="removeSculpture(i)"><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete"></mat-icon>
+        </mat-chip>
+    </mat-chip-set>
+    <mat-error *ngIf="error">
+        {{error}}
+    </mat-error>
 </div>

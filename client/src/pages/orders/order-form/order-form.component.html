@@ -29,7 +29,7 @@
                 </mat-error>
             </mat-form-field>
             <br />
-            <sculpture-picker formControlName="configuredSculptures"></sculpture-picker>
+            <sculpture-picker [error]="submitted && orderForm.get('configuredSculptures')?.errors?.['configuredSculpturesInvalid'].message" formControlName="configuredSculptures"></sculpture-picker>
             <br />
             <div>
                 <button mat-button mat-raised-button type="submit">Submit</button>
