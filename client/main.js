@@ -13,7 +13,7 @@ function createWindow() {
             nodeIntegration: true
         }
     })
-
+    win.removeMenu();
     win.loadURL('http://localhost:4200')
 
     win.webContents.openDevTools()

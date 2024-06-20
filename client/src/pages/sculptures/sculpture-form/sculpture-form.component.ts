@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, switchMap } from 'rxjs';
 import { Sculpture } from '../../../model/sculpture';
 import { SculptureService } from '../../../services/sculpture/sculpture.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { numberFieldValidator, textFieldValidator } from '../../../utils';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-sculpture-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatButtonModule, MatError],
   templateUrl: './sculpture-form.component.html',
   styleUrl: './sculpture-form.component.scss'
 })
@@ -24,6 +24,20 @@ export class SculptureFormComponent {
   sculpture$: Observable<Sculpture>;
   sculptureForm: FormGroup;
   isLoading: boolean = false;
+  
+  validationMessages = {
+    'name': [
+        { type: 'required', message: 'Name is required' },
+    ],
+    'basePrice': [
+        { type: 'required', message: 'Base Price is required' },
+        { type: 'numberField', message: 'Not a valid number' }
+    ],
+    'baseWeight': [
+        { type: 'required', message: 'Base Weight is required' },
+        { type: 'numberField', message: 'Not a valid number' }
+    ]
+};
 
   constructor(
     private router: Router,
@@ -55,18 +69,19 @@ export class SculptureFormComponent {
 
   fillForm(sculpture?: Sculpture) {
     this.sculptureForm = this.formBuilder.group({
-      name: [sculpture?.name || '', textFieldValidator],
-      basePrice: [sculpture?.basePrice || '', numberFieldValidator],
-      baseWeight: [sculpture?.baseWeight || '', numberFieldValidator],
+      name: [sculpture?.name || '', Validators.required],
+      basePrice: [sculpture?.basePrice || '', Validators.required],
+      baseWeight: [sculpture?.baseWeight || '', Validators.required],
       id: [sculpture?.id || '']
     });
   }
 
   onSubmit() {
-    if (!this.sculptureForm.valid) {
+    if (this.sculptureForm.invalid) {
+      console.log('aiucu')
       return;
     }
-
+    console.log(this.sculptureForm.get('name')?.invalid)
     const httpCall = this.sculptureId
       ? this.httpService.updateSculpture(this.sculptureForm.value)
       : this.httpService.createSculpture(this.sculptureForm.value);

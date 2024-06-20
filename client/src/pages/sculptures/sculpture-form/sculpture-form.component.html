@@ -14,16 +14,25 @@
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..." />
+                <mat-error *ngIf="sculptureForm.get('name')?.invalid">
+                   Required field
+                </mat-error>
             </mat-form-field>
             <br />
             <mat-form-field>
                 <mat-label>Base Price</mat-label>
                 <input matInput formControlName="basePrice" id="price" name="basePrice" type="number" />
+                <mat-error *ngIf="sculptureForm.get('basePrice')?.invalid">
+                    Required field
+                 </mat-error>
             </mat-form-field>
             <br />
             <mat-form-field>
                 <mat-label>Base Weight</mat-label>
                 <input matInput formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number" />
+                <mat-error *ngIf="sculptureForm.get('baseWeight')?.invalid">
+                    Required field
+                 </mat-error>
             </mat-form-field>
             <br />
             <button mat-raised-button color="primary" type="submit">Submit</button>

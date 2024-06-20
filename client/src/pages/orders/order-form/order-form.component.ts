@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, switchMap } from 'rxjs';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Order } from '../../../model/model';
 import { OrderService } from '../../../services/order/order.service';
 import { textFieldValidator } from '../../../utils';
@@ -22,7 +22,7 @@ import { MatCard } from '@angular/material/card';
     MatButtonModule,
     MatToolbarModule,
     MatFormFieldModule,
-    MatProgressSpinnerModule, MatCard],
+    MatProgressSpinnerModule, MatCard, MatFormFieldModule],
   templateUrl: './order-form.component.html',
   styleUrl: './order-form.component.scss'
 })
@@ -63,9 +63,9 @@ export class OrderFormComponent {
   fillForm(order?: Order) {
     this.orderForm = this.formBuilder.group({
       id: [order?.id || ''],
-      buyerName: [order?.buyerName || '', textFieldValidator],
-      buyerDeliveryAddress: [order?.buyerDeliveryAddress || '', textFieldValidator],
-      configuredSculptures: [order?.configuredSculptures || '']
+      buyerName: [order?.buyerName || '', Validators.required],
+      buyerDeliveryAddress: [order?.buyerDeliveryAddress || '', Validators.required],
+      configuredSculptures: [order?.configuredSculptures || '', Validators.required]
     });
   }
 

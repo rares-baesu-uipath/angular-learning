@@ -11,16 +11,22 @@
     <mat-spinner *ngIf="isLoading; else form"></mat-spinner>
     <ng-template #form>
         <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="outline">
+            <mat-form-field>
                 <mat-label>Buyer name:</mat-label>
                 <input matInput formControlName="buyerName" id="buyerName" name="buyerName" type="text"
                     placeholder="John Doe" />
+                <mat-error *ngIf="orderForm.get('buyerName')?.invalid">
+                    Required field
+                </mat-error>
             </mat-form-field>
             <br />
-            <mat-form-field appearance="outline">
+            <mat-form-field>
                 <mat-label>Address:</mat-label>
                 <input matInput formControlName="buyerDeliveryAddress" id="buyerDeliveryAddress"
                     name="buyerDeliveryAddress" type="text" />
+                <mat-error *ngIf="orderForm.get('buyerDeliveryAddress')?.invalid">
+                    Required field
+                </mat-error>
             </mat-form-field>
             <br />
             <sculpture-picker formControlName="configuredSculptures"></sculpture-picker>
