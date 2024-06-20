@@ -1,29 +1,32 @@
-<h1 *ngIf="sculptureId; else create_sculpture">
-    Edit sculpture
-</h1>
-<ng-template #create_sculpture>
-    <h1>Create sculpture</h1>
-</ng-template>
+<mat-card class="sculpture-form-wrapper">
+    <mat-card-title *ngIf="sculptureId; else create_sculpture">
+        Edit sculpture
+    </mat-card-title>
+    <ng-template #create_sculpture>
+        <mat-card-title>Create sculpture</mat-card-title>
+    </ng-template>
 
-<div *ngIf="isLoading; else form">
-    Is loading... (spinner)
-</div>
-<ng-template #form>
-    <form [formGroup]="sculptureForm" (ngSubmit)="onSubmit()">
-        <div>
-            <label for="name">Name:</label>
-            <input formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..." />
-        </div>
-        <div>
-            <label for="basePrice">Base price:</label>
-            <input formControlName="basePrice" id="price" name="basePrice" type="number" />
-        </div>
-        <div>
-            <label for="baseWeight">Base weight:</label>
-            <input formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number" />
-        </div>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</ng-template>
+    <div *ngIf="isLoading; else form">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+    <ng-template #form>
+        <form [formGroup]="sculptureForm" (ngSubmit)="onSubmit()">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..." />
+            </mat-form-field>
+            <br />
+            <mat-form-field>
+                <mat-label>Base Price</mat-label>
+                <input matInput formControlName="basePrice" id="price" name="basePrice" type="number" />
+            </mat-form-field>
+            <br />
+            <mat-form-field>
+                <mat-label>Base Weight</mat-label>
+                <input matInput formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number" />
+            </mat-form-field>
+            <br />
+            <button mat-raised-button color="primary" type="submit">Submit</button>
+        </form>
+    </ng-template>
+</mat-card>

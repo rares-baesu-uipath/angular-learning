@@ -7,11 +7,22 @@ import { OrderService } from '../../../services/order/order.service';
 import { textFieldValidator } from '../../../utils';
 import { CommonModule } from '@angular/common';
 import { SculpturePickerComponent } from './sculpture-picker/sculpture-picker.component';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatCard } from '@angular/material/card';
+
 
 @Component({
   selector: 'app-order-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SculpturePickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, SculpturePickerComponent,     MatInputModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule, MatCard],
   templateUrl: './order-form.component.html',
   styleUrl: './order-form.component.scss'
 })

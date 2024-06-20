@@ -5,11 +5,14 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
+import {MatSelectModule} from '@angular/material/select';
+
 
 @Component({
   selector: 'sculpture-picker',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule,     MatSelectModule,
+    FormsModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

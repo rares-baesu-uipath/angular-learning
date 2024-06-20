@@ -1,17 +1,20 @@
-<h1>List of sculptures</h1>
+<mat-card class="sculpture-list-wrapper">
+    <div class="wrapper">
+        <mat-card-title>List of sculptures</mat-card-title>
 
-<a [routerLink]="['/sculptures/new']">
-    Create new sculpture
-</a>
-
-<br/>
-<br/>
-
-<div *ngIf="sculptures$ | async as sculptures">
-    <div *ngFor="let sculpture of sculptures">
-        <a [routerLink]="['/sculptures', sculpture.id]">
-            {{sculpture.name}}
-        </a>
+        <button class="create-button" mat-raised-button color="primary" [routerLink]="['/sculptures/new']">
+            Create new sculpture
+        </button>
     </div>
-    
-</div>
+
+
+    <div *ngIf="sculptures$ | async as sculptures">
+        <mat-list role="list">
+            <mat-list-item role="listitem" *ngFor="let sculpture of sculptures">
+                <a [routerLink]="['/sculptures', sculpture.id]">
+                    {{sculpture.name}}
+                </a>
+            </mat-list-item>
+        </mat-list>
+    </div>
+</mat-card>

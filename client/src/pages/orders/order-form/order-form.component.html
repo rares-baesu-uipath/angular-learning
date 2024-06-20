@@ -1,27 +1,33 @@
-<h1 *ngIf="orderId; else create_order">
-    Edit order
-</h1>
-<ng-template #create_order>
-    <h1>Create order</h1>
-</ng-template>
+<mat-card class="order-form-wrapper">
+    <mat-toolbar *ngIf="orderId; else create_order" color="primary">
+        Edit order
+    </mat-toolbar>
+    <ng-template #create_order>
+        <mat-toolbar color="primary">
+            Create order
+        </mat-toolbar>
+    </ng-template>
 
-<div *ngIf="isLoading; else form">
-    Is loading... (spinner)
-</div>
-<ng-template #form>
-    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
-        <div>
-            <label for="buyerName">Buyer name:</label>
-            <input formControlName="buyerName" id="buyerName" name="buyerName" type="text" placeholder="John Doe" />
-        </div>
-        <div>
-            <label for="buyerDeliveryAddress">Address:</label>
-            <input formControlName="buyerDeliveryAddress" id="buyerDeliveryAddress" name="buyerDeliveryAddress"
-                type="text" />
-        </div>
-        <sculpture-picker formControlName="configuredSculptures" ></sculpture-picker>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</ng-template>
+    <mat-spinner *ngIf="isLoading; else form"></mat-spinner>
+    <ng-template #form>
+        <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="outline">
+                <mat-label>Buyer name:</mat-label>
+                <input matInput formControlName="buyerName" id="buyerName" name="buyerName" type="text"
+                    placeholder="John Doe" />
+            </mat-form-field>
+            <br />
+            <mat-form-field appearance="outline">
+                <mat-label>Address:</mat-label>
+                <input matInput formControlName="buyerDeliveryAddress" id="buyerDeliveryAddress"
+                    name="buyerDeliveryAddress" type="text" />
+            </mat-form-field>
+            <br />
+            <sculpture-picker formControlName="configuredSculptures"></sculpture-picker>
+            <br />
+            <div>
+                <button mat-button mat-raised-button type="submit">Submit</button>
+            </div>
+        </form>
+    </ng-template>
+</mat-card>

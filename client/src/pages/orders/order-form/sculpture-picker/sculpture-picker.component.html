@@ -1,10 +1,15 @@
-<label for="sculpture-picker">Choose a sculpture:</label>
-<select [(ngModel)]="_value[0].sculptureId" (ngModelChange)="updateSculpture($event)" name="sculpture-name-picker" id="sculpture-name-picker">
-    <option *ngFor="let sculpture of sculptures$ | async" [value]="sculpture.id" >{{sculpture.name}}</option>
-</select>
+<mat-form-field>
+    <mat-label>Choose a sculpture</mat-label>
+    <mat-select [(value)]="_value[0].sculptureId" (valueChange)="updateSculpture($event)" name="sculpture-name-picker" id="sculpture-name-picker">
+        <mat-option *ngFor="let sculpture of sculptures$ | async" [value]="sculpture.id">{{sculpture.name}}</mat-option>
+    </mat-select>
+</mat-form-field>
 
-<select [(ngModel)]="_value[0].material" (ngModelChange)="updateMaterial($event)" name="sculpture-material-picker" id="sculpture-material-picker">
-    <option value="WOOD">Wood</option>
-    <option value="BRONZE">Bronze</option>
-    <option value="PLATINUM">Platinum</option>
-</select>
+<mat-form-field>
+    <mat-label>Choose the Material</mat-label>
+    <mat-select [(value)]="_value[0].material" (valueChange)="updateMaterial($event)" name="sculpture-material-picker" id="sculpture-material-picker">
+        <mat-option value="WOOD">Wood</mat-option>
+        <mat-option value="BRONZE">Bronze</mat-option>
+        <mat-option value="PLATINUM">Platinum</mat-option>
+    </mat-select>
+</mat-form-field>
