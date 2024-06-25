@@ -1,41 +1,47 @@
 <mat-card class="sculpture-form-wrapper">
-    <mat-card-title *ngIf="sculptureId; else create_sculpture">
-        Edit sculpture
-    </mat-card-title>
-    <ng-template #create_sculpture>
-        <mat-card-title>Create sculpture</mat-card-title>
-    </ng-template>
+    <ng-container *ngIf="stateObs$ | async as state">
+        <mat-card-title *ngIf="sculptureId; else create_sculpture">
+            Edit sculpture
+        </mat-card-title>
+        <ng-template #create_sculpture>
+            <mat-card-title>Create sculpture</mat-card-title>
+        </ng-template>
+    
+        <div *ngIf="state.type === 'loading'">
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </div>
+        <div *ngIf="state.type === 'data'">
+                <form [formGroup]="sculptureForm" (ngSubmit)="onSubmit()">
+                    <mat-form-field>
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..." />
+                        <mat-error *ngIf="sculptureForm.get('name')?.invalid">
+                           Required field
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <mat-form-field>
+                        <mat-label>Base Price</mat-label>
+                        <input matInput formControlName="basePrice" id="price" name="basePrice" type="number" />
+                        <mat-error *ngIf="sculptureForm.get('basePrice')?.invalid">
+                            Required field
+                         </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <mat-form-field>
+                        <mat-label>Base Weight</mat-label>
+                        <input matInput formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number" />
+                        <mat-error *ngIf="sculptureForm.get('baseWeight')?.invalid">
+                            Required field
+                         </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <button mat-raised-button color="primary" type="submit">Submit</button>
+                </form>
+        </div>
+        <div *ngIf="state.type === 'error'">
+            ERROR: {{state.message}}
+        </div>
+    </ng-container>
 
-    <div *ngIf="isLoading; else form">
-        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-    </div>
-    <ng-template #form>
-        <form [formGroup]="sculptureForm" (ngSubmit)="onSubmit()">
-            <mat-form-field>
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="name" id="name" name="name" type="text" placeholder="Greek god statue..." />
-                <mat-error *ngIf="sculptureForm.get('name')?.invalid">
-                   Required field
-                </mat-error>
-            </mat-form-field>
-            <br />
-            <mat-form-field>
-                <mat-label>Base Price</mat-label>
-                <input matInput formControlName="basePrice" id="price" name="basePrice" type="number" />
-                <mat-error *ngIf="sculptureForm.get('basePrice')?.invalid">
-                    Required field
-                 </mat-error>
-            </mat-form-field>
-            <br />
-            <mat-form-field>
-                <mat-label>Base Weight</mat-label>
-                <input matInput formControlName="baseWeight" id="baseWeight" name="baseWeight" type="number" />
-                <mat-error *ngIf="sculptureForm.get('baseWeight')?.invalid">
-                    Required field
-                 </mat-error>
-            </mat-form-field>
-            <br />
-            <button mat-raised-button color="primary" type="submit">Submit</button>
-        </form>
-    </ng-template>
 </mat-card>

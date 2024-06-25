@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { OrderService } from '../../../services/order/order.service';
-import { Order } from '../../../model/model';
+import { Order } from '../../../model/order';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { MatListModule } from '@angular/material/list';

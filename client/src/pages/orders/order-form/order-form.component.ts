@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, switchMap } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Order } from '../../../model/model';
+import { Order } from '../../../model/order';
 import { OrderService } from '../../../services/order/order.service';
 import { CommonModule } from '@angular/common';
 import { SculpturePickerComponent } from './sculpture-picker/sculpture-picker.component';
@@ -43,9 +43,7 @@ export class OrderFormComponent {
 
   configuredSculpturesValidator(control: FormControl) {
     const configuredSculptures = control.value;
-    console.log('apel iaci')
     if (configuredSculptures.length === 0) {
-      console.log('eroareeeee')
       return { 
         configuredSculpturesInvalid: {
           message: 'Order must have at least one sculpture'
@@ -54,7 +52,6 @@ export class OrderFormComponent {
     }
     return null;
   }
-  
 
   ngOnInit() {
     this.orders$ = this.route.params.pipe(
@@ -86,7 +83,7 @@ export class OrderFormComponent {
 
   onSubmit() {
     this.submitted = true;
-    console.log(this.orderForm.value)
+
     if (!this.orderForm.valid) {
       return;
     }

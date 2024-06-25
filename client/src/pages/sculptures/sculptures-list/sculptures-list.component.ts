@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-sculptures-list',
   standalone: true,
-  imports: [RouterModule, CommonModule,     MatCardModule,
+  imports: [RouterModule, CommonModule, MatCardModule,
     MatButtonModule,
     MatDividerModule,
     MatListModule],

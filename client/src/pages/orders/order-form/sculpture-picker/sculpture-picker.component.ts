@@ -49,9 +49,11 @@ export class SculpturePickerComponent implements ControlValueAccessor {
       this._value = obj;
     }
   }
+
   registerOnChange(fn: (value: any) => void): void {
     this.onChange = fn;
   }
+
   registerOnTouched(fn: () => void): void {
     this.onTouch = fn;
   }
@@ -82,7 +84,9 @@ export class SculpturePickerComponent implements ControlValueAccessor {
       this._value = value;
     }
   }
+
   ngOnInit() {
+    console.log('test')
     this.httpService.getSculptures().subscribe({
       next: (sculptures) => {this.sculptures = sculptures as Sculpture[]}
     })
