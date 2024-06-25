@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, filter, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, filter, of, switchMap, tap, throwError } from 'rxjs';
 import { Sculpture } from '../../../model/sculpture';
 import { SculptureService } from '../../../services/sculpture/sculpture.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -41,8 +41,11 @@ export class SculptureFormComponent {
 
   ngOnInit() {
     this.stateObs$ = this.route.params.pipe(
-      filter(params => !!params['id']),
-      switchMap(params => this.httpService.getSculpture(params['id'])),
+      tap(params => {
+        this.sculptureId = params['id']
+      }),
+      switchMap(params => this.sculptureId ? this.httpService.getSculpture(params['id']): of({type: 'data', data: {name: '', basePrice: 0, baseWeight: 0}}) as Observable<State<Sculpture>>
+    ),
       tap(state => {
         if (state.type === 'data') {
           this.sculptureId = state.data.id;
