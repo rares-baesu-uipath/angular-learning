@@ -12,17 +12,20 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatCard } from '@angular/material/card';
-import { State } from '../../../model/common';
-import { Sculpture } from '../../../model/sculpture';
+import { MAX_TOTAL_WEIGHT, State } from '../../../model/common';
+import { ConfiguredSculpture, MATERIAL_CONFIG, Sculpture } from '../../../model/sculpture';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-order-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SculpturePickerComponent,     MatInputModule,
+  imports: [CommonModule, ReactiveFormsModule, SculpturePickerComponent, 
+    MatInputModule,
     MatButtonModule,
     MatToolbarModule,
     MatFormFieldModule,
+    MatIcon,
     MatProgressSpinnerModule, MatCard, MatFormFieldModule],
   templateUrl: './order-form.component.html',
   styleUrl: './order-form.component.scss',
@@ -42,18 +45,6 @@ export class OrderFormComponent {
     private orderService: OrderService,
     private formBuilder: FormBuilder
   ) {
-  }
-
-  configuredSculpturesValidator(control: FormControl) {
-    const configuredSculptures = control.value;
-    if (configuredSculptures.length === 0) {
-      return { 
-        configuredSculpturesInvalid: {
-          message: 'Order must have at least one sculpture'
-        } 
-      };
-    }
-    return null;
   }
 
   ngOnInit() {
@@ -94,6 +85,29 @@ export class OrderFormComponent {
       configuredSculptures: [order.configuredSculptures, [Validators.required, this.configuredSculpturesValidator]]
     });
   }
+  
+  configuredSculpturesValidator(control: FormControl<ConfiguredSculpture[]>) {
+    const configuredSculptures = control.value;
+    if (configuredSculptures.length === 0) {
+      return { 
+        configuredSculpturesInvalid: {
+          message: 'Order must have at least one sculpture'
+        } 
+      };
+    }
+
+    const totalWeight = configuredSculptures.reduce((prev, curr) => prev + MATERIAL_CONFIG[curr.material].weightMultiplier * curr.sculpture.baseWeight, 0)
+
+    if (totalWeight > MAX_TOTAL_WEIGHT) {
+      return { 
+        configuredSculpturesInvalid: {
+          message: `Order must have a maximum weight of ${MAX_TOTAL_WEIGHT}`
+        } 
+      }
+    }
+
+    return null;
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -109,5 +123,17 @@ export class OrderFormComponent {
       : this.orderService.createOrder$(this.orderForm.value);
 
     httpCall.subscribe(() => this.router.navigate(['/orders']));
+  }
+
+  deleteOrder() {
+    if (!this.orderId) {
+      return;
+    }
+    
+    this.state$.next({type: 'loading'});
+
+    this.orderService.deleteOrder$(this.orderId).subscribe({
+      next: () => this.router.navigate(['/sculptures'])
+    });
   }
 }

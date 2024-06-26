@@ -25,4 +25,8 @@ export class OrderService {
   updateOrder$(order: Order) {
     return requestIPCData$(IPC_EVENTS.UPDATE_ORDER, order, this.ngZone);
   }
+
+  deleteOrder$(id: string) {
+    return requestIPCData$(IPC_EVENTS.DELETE_ORDER, {id}, this.ngZone);
+  }
 }

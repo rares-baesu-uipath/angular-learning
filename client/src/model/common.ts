@@ -18,6 +18,7 @@ export function requestIPCData$<T>(event: IPC_EVENTS, dataInput: Object, ngZone:
   return new Observable<State<T>>(obs => {
     window.electron.ipcRenderer.send(event, dataInput);
     window.electron.ipcRenderer.once(event, (e: unknown, data: T) => {
+      console.log("VENIT DIN IPC", event, data)
       ngZone.run(() => {
         obs.next({
           type: 'data',
@@ -27,3 +28,5 @@ export function requestIPCData$<T>(event: IPC_EVENTS, dataInput: Object, ngZone:
     });
   })
 }
+
+export const MAX_TOTAL_WEIGHT = 100;

@@ -30,4 +30,8 @@ export class SculptureService {
   updateSculpture$(sculpture: Sculpture) {
     return requestIPCData$(IPC_EVENTS.UPDATE_SCULPTURE, sculpture, this.ngZone);
   }
+
+  deleteSculpture$(id: string) {
+    return requestIPCData$(IPC_EVENTS.DELETE_SCULPTURE, {id}, this.ngZone);
+  }
 }

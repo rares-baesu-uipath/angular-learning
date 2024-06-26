@@ -10,6 +10,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var uuid_1 = require("uuid");
 var ipc_1 = require("./ipc");
@@ -57,17 +66,31 @@ ipc.on(ipc_1.IPC_EVENTS.CREATE_ORDER, function (event, info) {
     })
         .catch(function () { return event.reply(ipc_1.IPC_EVENTS.CREATE_ORDER, 'ERROR'); });
 });
+ipc.on(ipc_1.IPC_EVENTS.DELETE_ORDER, function (event, info) {
+    readData()
+        .then(function (data) { return JSON.parse(data.toString()); })
+        .then(function (data) {
+        var newData = __spreadArray([], data.orders, true);
+        //data.orders.push(newData);
+        var index = newData.findIndex(function (d) { return d.id === info.id; });
+        if (index > -1) {
+            newData.splice(index, 1);
+            data.orders = newData;
+            writeData(data).then(function () { return event.reply(ipc_1.IPC_EVENTS.DELETE_ORDER, { status: 'ok' }); });
+        }
+    });
+});
 ipc.on(ipc_1.IPC_EVENTS.GET_SCULPTURES, function (event, info) {
     readData()
         .then(function (data) { return JSON.parse(data.toString()); })
         .then(function (data) { return event.reply(ipc_1.IPC_EVENTS.GET_SCULPTURES, data.sculptures); })
-        .catch(function () { return event.reply(ipc_1.IPC_EVENTS.GET_SCULPTURES, 'ERROR'); });
+        .catch(function (error) { return event.reply(ipc_1.IPC_EVENTS.GET_SCULPTURES, error); });
 });
 ipc.on(ipc_1.IPC_EVENTS.GET_SCULPTURE, function (event, info) {
     readData()
         .then(function (data) { return JSON.parse(data.toString()); })
         .then(function (data) { return event.reply(ipc_1.IPC_EVENTS.GET_SCULPTURE, data.sculptures.find(function (s) { return s.id === info.id; })); })
-        .catch(function () { return event.reply(ipc_1.IPC_EVENTS.GET_SCULPTURE, 'ERROR'); });
+        .catch(function (error) { return event.reply(ipc_1.IPC_EVENTS.GET_SCULPTURE, error); });
 });
 ipc.on(ipc_1.IPC_EVENTS.UPDATE_SCULPTURE, function (event, info) {
     readData()
@@ -87,7 +110,24 @@ ipc.on(ipc_1.IPC_EVENTS.CREATE_SCULPTURE, function (event, info) {
         data.sculptures.push(newData);
         writeData(data).then(function () { return event.reply(ipc_1.IPC_EVENTS.CREATE_SCULPTURE, { status: 'ok' }); });
     })
-        .catch(function () { return event.reply(ipc_1.IPC_EVENTS.CREATE_SCULPTURE, 'ERROR'); });
+        .catch(function (error) { return event.reply(ipc_1.IPC_EVENTS.CREATE_SCULPTURE, error); });
+});
+ipc.on(ipc_1.IPC_EVENTS.DELETE_SCULPTURE, function (event, info) {
+    readData()
+        .then(function (data) { return JSON.parse(data.toString()); })
+        .then(function (data) {
+        var newData = __spreadArray([], data.sculptures, true);
+        //data.orders.push(newData);
+        var index = newData.findIndex(function (d) { return d.id === info.id; });
+        if (index > -1) {
+            newData.splice(index, 1);
+            console.log(newData);
+            console.log(index);
+            console.log('====================================');
+            data.sculptures = __spreadArray([], newData, true);
+            writeData(data).then(function () { return event.reply(ipc_1.IPC_EVENTS.DELETE_SCULPTURE, { status: 'ok' }); });
+        }
+    }).catch(function (error) { return event.reply(ipc_1.IPC_EVENTS.DELETE_SCULPTURE, error); });
 });
 function createWindow() {
     var win = new BrowserWindow({

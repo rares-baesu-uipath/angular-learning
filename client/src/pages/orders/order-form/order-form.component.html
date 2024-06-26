@@ -36,6 +36,10 @@
                 <br />
                 <div>
                     <button mat-button mat-raised-button type="submit">Submit</button>
+                    <button *ngIf="orderId" mat-raised-button color="warn" type="button" (click)="deleteOrder()">
+                        <mat-icon>delete</mat-icon> 
+                        Delete
+                      </button>   
                 </div>
             </form>
         </div>
@@ -43,32 +47,4 @@
             ERROR: {{state.message}}
         </div>
     </ng-container>
-    <!-- <mat-spinner *ngIf="isLoading; else form"></mat-spinner>
-    <ng-template #form>
-        <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
-            <mat-form-field>
-                <mat-label>Buyer name:</mat-label>
-                <input matInput formControlName="buyerName" id="buyerName" name="buyerName" type="text"
-                    placeholder="John Doe" />
-                <mat-error *ngIf="orderForm.get('buyerName')?.invalid">
-                    Required field
-                </mat-error>
-            </mat-form-field>
-            <br />
-            <mat-form-field>
-                <mat-label>Address:</mat-label>
-                <input matInput formControlName="buyerDeliveryAddress" id="buyerDeliveryAddress"
-                    name="buyerDeliveryAddress" type="text" />
-                <mat-error *ngIf="orderForm.get('buyerDeliveryAddress')?.invalid">
-                    Required field
-                </mat-error>
-            </mat-form-field>
-            <br />
-            <sculpture-picker [error]="submitted && orderForm.get('configuredSculptures')?.errors?.['configuredSculpturesInvalid'].message" formControlName="configuredSculptures"></sculpture-picker>
-            <br />
-            <div>
-                <button mat-button mat-raised-button type="submit">Submit</button>
-            </div>
-        </form>
-    </ng-template> -->
 </mat-card>

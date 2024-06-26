@@ -11,11 +11,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { State } from '../../../model/common';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-sculpture-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatButtonModule, MatError],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatButtonModule, MatError, MatIcon],
   templateUrl: './sculpture-form.component.html',
   styleUrl: './sculpture-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -89,5 +90,17 @@ export class SculptureFormComponent {
       : this.sculptureService.createSculpture$(this.sculptureForm.value);
 
     httpCall.subscribe(() => this.router.navigate(['/sculptures']));
+  }
+
+  deleteSculpture() {
+    if (!this.sculptureId) {
+      return;
+    }
+
+    this.state$.next({type: 'loading'});
+
+    this.sculptureService.deleteSculpture$(this.sculptureId).subscribe({
+      next: () => this.router.navigate(['/sculptures'])
+    });
   }
 }

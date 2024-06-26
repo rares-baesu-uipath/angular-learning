@@ -65,19 +65,36 @@ ipc.on(IPC_EVENTS.CREATE_ORDER, (event, info) => {
     .catch(() => event.reply(IPC_EVENTS.CREATE_ORDER, 'ERROR'));
 })
 
+ipc.on(IPC_EVENTS.DELETE_ORDER, (event, info) => {
+    readData()
+    .then((data: Buffer) => JSON.parse(data.toString()))
+    .then((data: OrderObject) => {
+      const newData = [...data.orders]
+      //data.orders.push(newData);
+      const index = newData.findIndex(d => d.id === info.id)
+      if (index > -1) {
+        newData.splice(index, 1);
+        data.orders = newData
+        writeData(data).then(() => event.reply(IPC_EVENTS.DELETE_ORDER, {status: 'ok'}));
+      }
+      
+    })
+})
+
+
 
 ipc.on(IPC_EVENTS.GET_SCULPTURES, (event, info) => {
     readData()
     .then((data: Buffer) => JSON.parse(data.toString()))
     .then((data: OrderObject) => event.reply(IPC_EVENTS.GET_SCULPTURES, data.sculptures))
-    .catch(() => event.reply(IPC_EVENTS.GET_SCULPTURES, 'ERROR'));
+    .catch((error: any) => event.reply(IPC_EVENTS.GET_SCULPTURES, error));
 });
 
 ipc.on(IPC_EVENTS.GET_SCULPTURE, (event, info) => {
     readData()
     .then((data: Buffer) => JSON.parse(data.toString()))
     .then((data: OrderObject) => event.reply(IPC_EVENTS.GET_SCULPTURE, data.sculptures.find((s: any) => s.id === info.id)))
-    .catch(() => event.reply(IPC_EVENTS.GET_SCULPTURE, 'ERROR'));
+    .catch((error: any) => event.reply(IPC_EVENTS.GET_SCULPTURE, error));
 });
 
 ipc.on(IPC_EVENTS.UPDATE_SCULPTURE, (event, info) => {
@@ -99,7 +116,26 @@ ipc.on(IPC_EVENTS.CREATE_SCULPTURE, (event, info) => {
       data.sculptures.push(newData);
       writeData(data).then(() => event.reply(IPC_EVENTS.CREATE_SCULPTURE, {status: 'ok'}));
     })
-    .catch(() => event.reply(IPC_EVENTS.CREATE_SCULPTURE, 'ERROR'));
+    .catch((error: any) => event.reply(IPC_EVENTS.CREATE_SCULPTURE, error));
+})
+
+ipc.on(IPC_EVENTS.DELETE_SCULPTURE, (event, info) => {
+    readData()
+    .then((data: Buffer) => JSON.parse(data.toString()))
+    .then((data: OrderObject) => {
+      const newData = [...data.sculptures]
+      //data.orders.push(newData);
+      const index = newData.findIndex(d => d.id === info.id)
+      if (index > -1) {
+        newData.splice(index, 1);
+        console.log(newData)
+        console.log(index)
+        console.log('====================================')
+        data.sculptures = [...newData]
+        writeData(data).then(() => event.reply(IPC_EVENTS.DELETE_SCULPTURE, {status: 'ok'}));
+      }
+      
+    }).catch((error: any) => event.reply(IPC_EVENTS.DELETE_SCULPTURE, error));
 })
 
 function createWindow() {
