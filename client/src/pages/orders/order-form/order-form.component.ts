@@ -101,7 +101,7 @@ export class OrderFormComponent {
     if (!this.orderForm.valid) {
       return;
     }
-    
+
     this.state$.next({type: 'loading'})
 
     const httpCall = this.orderId
