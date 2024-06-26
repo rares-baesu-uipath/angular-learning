@@ -8,7 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { State } from '../../../model/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-sculptures-list',
@@ -16,15 +18,16 @@ import { Observable } from 'rxjs';
   imports: [RouterModule, CommonModule, MatCardModule,
     MatButtonModule,
     MatDividerModule,
-    MatListModule],
+    MatListModule, MatProgressSpinnerModule],
   templateUrl: './sculptures-list.component.html',
   styleUrl: './sculptures-list.component.scss'
 })
 export class SculpturesListComponent {
-  sculptures$: Observable<Sculpture[]>;
-  constructor(private httpService: SculptureService) { }
+  state$ = new BehaviorSubject<State<Sculpture[]>>({ type: 'loading' });
+  stateObs$ = this.state$.asObservable();
+  constructor(private sculptureService: SculptureService) { }
 
   ngOnInit() {
-    this.sculptures$ = this.httpService.getSculptures() as Observable<Sculpture[]>;
+    this.stateObs$ = this.sculptureService.getSculptures$();
   }
 }

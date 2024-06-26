@@ -34,7 +34,7 @@ export class SculptureFormComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private httpService: SculptureService,
+    private sculptureService: SculptureService,
     private formBuilder: FormBuilder,
   ) {
   }
@@ -44,8 +44,8 @@ export class SculptureFormComponent {
       tap(params => {
         this.sculptureId = params['id']
       }),
-      switchMap(params => this.sculptureId ? this.httpService.getSculpture(params['id']): of({type: 'data', data: {name: '', basePrice: 0, baseWeight: 0}}) as Observable<State<Sculpture>>
-    ),
+      switchMap(params => this.sculptureId ? this.sculptureService.getSculpture$(params['id']) : of<State<Sculpture>>({ type: 'data', data: { id: '', name: '', basePrice: 0, baseWeight: 0 } })
+      ),
       tap(state => {
         if (state.type === 'data') {
           this.sculptureId = state.data.id;
@@ -78,8 +78,8 @@ export class SculptureFormComponent {
     }
 
     const httpCall = this.sculptureId
-      ? this.httpService.updateSculpture(this.sculptureForm.value)
-      : this.httpService.createSculpture(this.sculptureForm.value);
+      ? this.sculptureService.updateSculpture(this.sculptureForm.value)
+      : this.sculptureService.createSculpture(this.sculptureForm.value);
 
     httpCall.subscribe(() => this.router.navigate(['/sculptures']));
   }

@@ -86,9 +86,8 @@ export class SculpturePickerComponent implements ControlValueAccessor {
   }
 
   ngOnInit() {
-    console.log('test')
-    this.httpService.getSculptures().subscribe({
-      next: (sculptures) => {this.sculptures = sculptures as Sculpture[]}
-    })
+    // this.httpService.getSculptures().subscribe({
+    //   next: (sculptures) => {this.sculptures = sculptures as Sculpture[]}
+    // })
   }
 }

@@ -7,14 +7,24 @@
         </button>
     </div>
 
+    <ng-container *ngIf="stateObs$ | async as state">
+        <div *ngIf="state.type === 'loading'">
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </div>
+        <div *ngIf="state.type === 'error'">
+            ERROR: {{state.message}}
+        </div>
+        <div *ngIf="state.type === 'data'">
+            <mat-list role="list">
+                <mat-list-item role="listitem" *ngFor="let sculpture of state.data">
+                    <a [routerLink]="['/sculptures', sculpture.id]">
+                        {{sculpture.name}}
+                    </a>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </ng-container>
 
-    <div *ngIf="sculptures$ | async as sculptures">
-        <mat-list role="list">
-            <mat-list-item role="listitem" *ngFor="let sculpture of sculptures">
-                <a [routerLink]="['/sculptures', sculpture.id]">
-                    {{sculpture.name}}
-                </a>
-            </mat-list-item>
-        </mat-list>
-    </div>
+
+
 </mat-card>

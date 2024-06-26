@@ -4,9 +4,9 @@ import { Sculpture } from '../../model/sculpture';
 import electron  from 'electron';
 import { IPC_EVENTS } from '../../../ipc';
 import { Observable } from 'rxjs';
-import { State } from '../../model/common';
+import { State, requestIPCData$ } from '../../model/common';
 
-declare var window: any; // Put this at the top of your component.
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,22 +16,13 @@ export class SculptureService {
 
   constructor(private http: HttpClient, private ngZone: NgZone) { }
 
-  getSculptures() {
-    return this.http.get(this.BASE_URL);
+
+  getSculptures$() {
+    return requestIPCData$<Sculpture[]>(IPC_EVENTS.GET_SCULPTURES, {}, this.ngZone);
   }
 
-  getSculpture(id: string) {
-    return new Observable<State<Sculpture>>(obs => {
-      window.electron.ipcRenderer.send(IPC_EVENTS.GET_SCULPTURE, {id});
-      window.electron.ipcRenderer.once(IPC_EVENTS.GET_SCULPTURE, (event: any, data: any) => {
-        this.ngZone.run(() =>{
-          obs.next({
-            type: 'data',
-            data
-          });
-        })
-      });
-    })
+  getSculpture$(id: string) {
+    return requestIPCData$<Sculpture>(IPC_EVENTS.GET_SCULPTURE, {id}, this.ngZone);
   }
   
 
