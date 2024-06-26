@@ -29,7 +29,6 @@ export class SculptureFormComponent {
   });
   sculptureId: string;
   state$ = new BehaviorSubject<State<Sculpture>>({ type: 'loading' });
-  stateObs$ = this.state$.asObservable();
 
   constructor(
     private router: Router,
@@ -40,11 +39,14 @@ export class SculptureFormComponent {
   }
 
   ngOnInit() {
-    this.stateObs$ = this.route.params.pipe(
+    this.route.params.pipe(
       tap(params => {
         this.sculptureId = params['id']
       }),
-      switchMap(params => this.sculptureId ? this.sculptureService.getSculpture$(params['id']) : of<State<Sculpture>>({ type: 'data', data: { id: '', name: '', basePrice: 0, baseWeight: 0 } })
+      switchMap(params =>
+        this.sculptureId ?
+          this.sculptureService.getSculpture$(params['id']) :
+          of<State<Sculpture>>({ type: 'data', data: { id: '', name: '', basePrice: 0, baseWeight: 0 } })
       ),
       tap(state => {
         if (state.type === 'data') {
@@ -60,7 +62,10 @@ export class SculptureFormComponent {
         this.state$.next(state);
         return obs;
       })
-    );
+    ).subscribe({
+      next: data => this.state$.next(data),
+      error: err => this.state$.error(err)
+    });
   }
 
   fillForm(sculpture: Sculpture) {
@@ -76,6 +81,8 @@ export class SculptureFormComponent {
     if (this.sculptureForm.invalid) {
       return;
     }
+
+    this.state$.next({type: 'loading'});
 
     const httpCall = this.sculptureId
       ? this.sculptureService.updateSculpture$(this.sculptureForm.value)

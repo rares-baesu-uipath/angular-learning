@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, filter, of, switchMap, tap } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Order } from '../../../model/order';
 import { OrderService } from '../../../services/order/order.service';
@@ -12,6 +12,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatCard } from '@angular/material/card';
+import { State } from '../../../model/common';
+import { Sculpture } from '../../../model/sculpture';
 
 
 @Component({
@@ -23,22 +25,23 @@ import { MatCard } from '@angular/material/card';
     MatFormFieldModule,
     MatProgressSpinnerModule, MatCard, MatFormFieldModule],
   templateUrl: './order-form.component.html',
-  styleUrl: './order-form.component.scss'
+  styleUrl: './order-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderFormComponent {
   orderId: string;
-  orders$: Observable<Order>;
-  orderForm: FormGroup;
-  isLoading: boolean = false;
+  state$ = new BehaviorSubject<State<Order>>({ type: 'loading' });
+  orderForm: FormGroup = this.formBuilder.group({
+    id: '', buyerName: '', buyerDeliveryAddress: '', configuredSculptures: []
+  });
   submitted: boolean = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private httpService: OrderService,
+    private orderService: OrderService,
     private formBuilder: FormBuilder
   ) {
-    this.fillForm();
   }
 
   configuredSculpturesValidator(control: FormControl) {
@@ -54,30 +57,41 @@ export class OrderFormComponent {
   }
 
   ngOnInit() {
-    this.orders$ = this.route.params.pipe(
-      filter(params => !!params['id']),
-      switchMap(params => {
-        this.isLoading = true;
-        return this.httpService.getOrder(params['id']);
+    this.route.params.pipe(
+      tap(params => {
+        this.orderId = params['id']
+      }),
+      switchMap(params =>
+        this.orderId ?
+          this.orderService.getOrder$(params['id']) :
+          of<State<Order>>({ type: 'data', data: { id: '', buyerName: '', buyerDeliveryAddress: '', configuredSculptures: [] } })
+      ),
+      tap(state => {
+        if (state.type === 'data') {
+          this.orderId = state.data.id;
+          this.fillForm(state.data);
+          this.state$.next({
+            type: 'data',
+            data: state.data
+          });
+        }
+      }),
+      catchError((state, obs) => {
+        this.state$.next(state);
+        return obs;
       })
-    ) as Observable<Order>;
-
-    this.orders$.subscribe({
-      next: (order) => {
-        this.orderId = order.id;
-        this.fillForm(order)
-        this.isLoading = false;
-      },
-      error: (error) => console.error(error)
-    })
+    ).subscribe({
+      next: data => this.state$.next(data),
+      error: err => this.state$.error(err)
+    });
   }
 
-  fillForm(order?: Order) {
+  fillForm(order: Order) {
     this.orderForm = this.formBuilder.group({
-      id: [order?.id || ''],
-      buyerName: [order?.buyerName || '', Validators.required],
-      buyerDeliveryAddress: [order?.buyerDeliveryAddress || '', Validators.required],
-      configuredSculptures: [order?.configuredSculptures || '', [Validators.required, this.configuredSculpturesValidator]]
+      id: [order.id],
+      buyerName: [order.buyerName, Validators.required],
+      buyerDeliveryAddress: [order.buyerDeliveryAddress, Validators.required],
+      configuredSculptures: [order.configuredSculptures, [Validators.required, this.configuredSculpturesValidator]]
     });
   }
 
@@ -88,9 +102,11 @@ export class OrderFormComponent {
       return;
     }
     
+    this.state$.next({type: 'loading'})
+
     const httpCall = this.orderId
-      ? this.httpService.updateOrder(this.orderForm.value)
-      : this.httpService.createOrder(this.orderForm.value);
+      ? this.orderService.updateOrder$(this.orderForm.value)
+      : this.orderService.createOrder$(this.orderForm.value);
 
     httpCall.subscribe(() => this.router.navigate(['/orders']));
   }

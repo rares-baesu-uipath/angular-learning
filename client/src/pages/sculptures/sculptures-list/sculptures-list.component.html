@@ -7,7 +7,7 @@
         </button>
     </div>
 
-    <ng-container *ngIf="stateObs$ | async as state">
+    <ng-container *ngIf="state$ | async as state">
         <div *ngIf="state.type === 'loading'">
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </div>

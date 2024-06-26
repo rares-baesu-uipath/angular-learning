@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Sculpture } from '../../../model/sculpture';
 import { SculptureService } from '../../../services/sculpture/sculpture.service';
@@ -20,14 +20,17 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDividerModule,
     MatListModule, MatProgressSpinnerModule],
   templateUrl: './sculptures-list.component.html',
-  styleUrl: './sculptures-list.component.scss'
+  styleUrl: './sculptures-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SculpturesListComponent {
   state$ = new BehaviorSubject<State<Sculpture[]>>({ type: 'loading' });
-  stateObs$ = this.state$.asObservable();
   constructor(private sculptureService: SculptureService) { }
 
   ngOnInit() {
-    this.stateObs$ = this.sculptureService.getSculptures$();
+    this.sculptureService.getSculptures$().subscribe({
+      next: data => this.state$.next(data),
+      error: err => this.state$.error(err)
+    });
   }
 }

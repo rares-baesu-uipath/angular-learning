@@ -1,33 +1,28 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Order } from '../../model/order';
+import { requestIPCData$ } from '../../model/common';
+import { IPC_EVENTS } from '../../../ipc';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
+  constructor(private ngZone: NgZone) { }
 
-  private BASE_URL = 'http://localhost:3000/orders';
-
-  constructor(private http: HttpClient) { }
-
-  getOrders() {
-    return this.http.get(this.BASE_URL);
+  getOrders$() {
+    return requestIPCData$<Order[]>(IPC_EVENTS.GET_ORDERS, {}, this.ngZone);
   }
 
-  getOrder(id: string) {
-    return this.http.get(`${this.BASE_URL}/${id}`);
+  getOrder$(id: string) {
+    return requestIPCData$<Order>(IPC_EVENTS.GET_ORDER, {id}, this.ngZone);
   }
 
-  createOrder(order: Order) {
-    return this.http.post(`${this.BASE_URL}`, {
-      ...order
-    })
+  createOrder$(order: Order) {
+    return requestIPCData$(IPC_EVENTS.CREATE_ORDER, order, this.ngZone);
   }
 
-  updateOrder(order: Order) {
-    return this.http.put(`${this.BASE_URL}/${order.id}`, {
-      ...order
-    })
+  updateOrder$(order: Order) {
+    return requestIPCData$(IPC_EVENTS.UPDATE_ORDER, order, this.ngZone);
   }
 }
