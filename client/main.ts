@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { IPC_EVENTS } from "./ipc";
 import { Order } from "./src/model/order";
 import { Sculpture } from "./src/model/sculpture";
@@ -53,6 +54,17 @@ ipc.on(IPC_EVENTS.UPDATE_ORDER, (event, info) => {
     .catch(() => event.reply(IPC_EVENTS.UPDATE_ORDER, 'ERROR'));
 })
 
+ipc.on(IPC_EVENTS.CREATE_ORDER, (event, info) => {
+    readData()
+    .then((data: Buffer) => JSON.parse(data.toString()))
+    .then((data: OrderObject) => {
+      const newData = {...info, id: v4() }
+      data.orders.push(newData);
+      writeData(data).then(() => event.reply(IPC_EVENTS.CREATE_ORDER, {status: 'ok'}));
+    })
+    .catch(() => event.reply(IPC_EVENTS.CREATE_ORDER, 'ERROR'));
+})
+
 
 ipc.on(IPC_EVENTS.GET_SCULPTURES, (event, info) => {
     readData()
@@ -79,10 +91,21 @@ ipc.on(IPC_EVENTS.UPDATE_SCULPTURE, (event, info) => {
     .catch(() => event.reply(IPC_EVENTS.UPDATE_SCULPTURE, 'ERROR'));
 })
 
+ipc.on(IPC_EVENTS.CREATE_SCULPTURE, (event, info) => {
+    readData()
+    .then((data: Buffer) => JSON.parse(data.toString()))
+    .then((data: OrderObject) => {
+      const newData = {...info, id: v4() }
+      data.sculptures.push(newData);
+      writeData(data).then(() => event.reply(IPC_EVENTS.CREATE_SCULPTURE, {status: 'ok'}));
+    })
+    .catch(() => event.reply(IPC_EVENTS.CREATE_SCULPTURE, 'ERROR'));
+})
+
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,
+        height: 800,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false, //also add this line

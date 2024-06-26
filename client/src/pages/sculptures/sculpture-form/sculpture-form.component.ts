@@ -78,8 +78,8 @@ export class SculptureFormComponent {
     }
 
     const httpCall = this.sculptureId
-      ? this.sculptureService.updateSculpture(this.sculptureForm.value)
-      : this.sculptureService.createSculpture(this.sculptureForm.value);
+      ? this.sculptureService.updateSculpture$(this.sculptureForm.value)
+      : this.sculptureService.createSculpture$(this.sculptureForm.value);
 
     httpCall.subscribe(() => this.router.navigate(['/sculptures']));
   }

@@ -12,10 +12,7 @@ import { State, requestIPCData$ } from '../../model/common';
 })
 export class SculptureService {
 
-  private BASE_URL = 'http://localhost:3000/sculptures';
-
-  constructor(private http: HttpClient, private ngZone: NgZone) { }
-
+  constructor(private ngZone: NgZone) { }
 
   getSculptures$() {
     return requestIPCData$<Sculpture[]>(IPC_EVENTS.GET_SCULPTURES, {}, this.ngZone);
@@ -26,15 +23,11 @@ export class SculptureService {
   }
   
 
-  createSculpture(sculpture: Sculpture) {
-    return this.http.post(`${this.BASE_URL}`, {
-      ...sculpture
-    })
+  createSculpture$(sculpture: Sculpture) {
+    return requestIPCData$(IPC_EVENTS.CREATE_SCULPTURE, sculpture, this.ngZone);
   }
 
-  updateSculpture(sculpture: Sculpture) {
-    return this.http.put(`${this.BASE_URL}/${sculpture.id}`, {
-      ...sculpture
-    })
+  updateSculpture$(sculpture: Sculpture) {
+    return requestIPCData$(IPC_EVENTS.UPDATE_SCULPTURE, sculpture, this.ngZone);
   }
 }
